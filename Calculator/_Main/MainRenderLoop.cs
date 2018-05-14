@@ -10,7 +10,7 @@ namespace Calculator
 {
     //where the rendering logic goes: actually runs the program here.
     class MainRenderLoop
-    {
+    { 
         /* FIELDS AND PROPERTIES */
         //the display window:
         private Display display;
