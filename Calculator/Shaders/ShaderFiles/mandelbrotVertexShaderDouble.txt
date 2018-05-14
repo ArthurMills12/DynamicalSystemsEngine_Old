@@ -1,0 +1,28 @@
+#version 400 core
+
+in vec3 position;
+in dvec2 complex;
+
+uniform dvec4 row0;
+uniform dvec4 row1;
+uniform dvec4 row2;
+uniform dvec4 row3;
+uniform vec2 mousePosition;
+
+dmat4 transformationMatrix;
+
+out dvec2 fragComplex;
+
+void main(void)
+{
+	gl_Position = vec4(position, 1);
+
+	transformationMatrix[0] = row0;
+	transformationMatrix[1] = row1;
+	transformationMatrix[2] = row2;
+	transformationMatrix[3] = row3;
+
+	dvec4 transformedComplex = transformationMatrix * dvec4(complex, 0, 1);
+
+	fragComplex = transformedComplex.xy;
+}

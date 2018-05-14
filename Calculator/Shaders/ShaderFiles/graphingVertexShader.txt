@@ -1,0 +1,22 @@
+#version 400 core
+
+in vec3 position;
+in vec3 color;
+
+out vec3 fragColor;
+
+uniform vec3 dynamicColor;
+uniform mat4 transformationMatrix;
+uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
+
+void main(void)
+{
+	vec4 worldPosition = transformationMatrix * vec4(position, 1);
+	gl_Position = projectionMatrix * viewMatrix * worldPosition;
+
+	//gl_PointSize = 3;
+	gl_PointSize = 1;
+
+	fragColor = dynamicColor;
+}

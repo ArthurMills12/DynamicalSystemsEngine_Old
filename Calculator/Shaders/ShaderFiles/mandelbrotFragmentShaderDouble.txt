@@ -1,0 +1,53 @@
+#version 400 core
+precision highp float;
+
+//out vec4 outColor;
+in dvec2 fragComplex;
+
+
+void main(void)
+{
+	double real = 0;
+	double imaginary = 0;
+	
+	double escapeRadiusSquared = 4;
+	int maxIterations = 100;
+	double zMagnitudeSquared = 0;
+	int iterations = 0;
+
+	while (zMagnitudeSquared < escapeRadiusSquared && iterations < maxIterations)
+	{
+		//real = abs(real);
+		//imaginary = abs(imaginary);
+
+		double complexSquareReal = real * real - imaginary * imaginary;
+		double complexSquareImaginary = 2 * real * imaginary;
+
+		real = complexSquareReal + fragComplex.x;
+		imaginary = complexSquareImaginary + fragComplex.y;
+
+		iterations++;
+		zMagnitudeSquared = real * real + imaginary * imaginary;
+	}
+
+	dvec3 color;
+
+	if (iterations == maxIterations)
+	{
+		color = vec3(0, 0, 0);
+	}
+	else
+	{
+		double log_zn = 0.5 * log(zMagnitudeSquared);
+		double nu = log(log_zn / log(2)) / log(2);
+		double colorRegulator = floor(iterations + 1 - nu);
+		color = dvec3(0.95 + .012*colorRegulator , 1.0, .2+.4*(1.0+sin(.3*colorRegulator)));
+
+
+	}
+	dvec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+	dvec3 m = abs(fract(color.xxx + K.xyz) * 6.0 - K.www);
+
+	gl_FragColor.rgb = (float)color.z * mix((float)K.xxx, (float)clamp(m - K.xxx, 0.0, 1.0), (float)color.y);
+	gl_FragColor.a=1.0;
+}
